@@ -1,0 +1,9 @@
+{
+  "name": "Raahyodha",
+  "description": "A companion app for Indian truck drivers, mechanics, truck owners, and dhaba maliks.",
+  "requestFramePermissions": [
+    "geolocation",
+    "camera",
+    "microphone"
+  ]
+}

@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+@theme {
+  --animate-shimmer: shimmer 2s linear infinite;
+  --animate-dash: dash 20s linear infinite;
+  --animate-spin-slow: spin 3s linear infinite;
+  
+  @keyframes shimmer {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(100%);
+    }
+  }
+
+  @keyframes dash {
+    to {
+      stroke-dashoffset: -1000;
+    }
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    /* IE and Edge */
+    -ms-overflow-style: none;
+    /* Firefox */
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
