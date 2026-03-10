@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
 import { AppProvider, useAppContext } from './store/AppContext';
-import { SplashScreen } from './components/SplashScreen.tsx';
-import { LoginScreen } from './components/LoginScreen.tsx';
+import { SplashScreen } from './components/SplashScreenView.tsx';
+import { LoginScreen } from './components/LoginScreenView.tsx';
 import { RoleSelection } from './components/RoleSelection.tsx';
-import { VerificationScreen } from './components/VerificationScreen.tsx';
+import { VerificationScreen } from './components/VerificationScreenView.tsx';
 import { Layout } from './components/Layout.tsx';
 import { DriverDashboard } from './components/Dashboard/DriverDashboard.tsx';
 import { MistriDashboard } from './components/Dashboard/MistriDashboard.tsx';
 import { OwnerDashboard } from './components/Dashboard/OwnerDashboard.tsx';
 import { DhabaDashboard } from './components/Dashboard/DhabaDashboard.tsx';
-import { MapScreen } from './components/MapScreen.tsx';
-import { CommunityScreen } from './components/CommunityScreen.tsx';
-import { HealthScreen } from './components/HealthScreen.tsx';
-import { ShortsScreen } from './components/ShortsScreen.tsx';
-import { ProfileScreen } from './components/ProfileScreen.tsx';
+import { MapScreen } from './components/MapScreenView.tsx';
+import { CommunityScreen } from './components/CommunityScreenView.tsx';
+import { HealthScreen } from './components/HealthScreenView.tsx';
+import { ShortsScreen } from './components/ShortsScreenView.tsx';
+import { ProfileScreen } from './components/ProfileScreenView.tsx';
 import { YodhaAssistant } from './components/YodhaAssistant.tsx';
 import { AdminDashboard } from './components/AdminDashboard.tsx';
 
