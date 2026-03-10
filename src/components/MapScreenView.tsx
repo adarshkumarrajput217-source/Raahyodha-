@@ -16,13 +16,31 @@ const defaultCenter = {
 };
 
 export const MapScreen = () => {
+  const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+
+  if (!apiKey) {
+    return (
+      <div className="relative h-[calc(100vh-64px)] md:h-[calc(100vh-64px)] w-full bg-slate-800 overflow-hidden flex flex-col items-center justify-center p-6 text-center">
+        <AlertTriangle size={48} className="text-orange-500 mb-4" />
+        <h2 className="text-2xl font-bold text-white mb-2">Google Maps API Key Missing</h2>
+        <p className="text-slate-400 max-w-md">
+          Please add your Google Maps API key to the environment variables (VITE_GOOGLE_MAPS_API_KEY) to view the map.
+        </p>
+      </div>
+    );
+  }
+
+  return <MapScreenContent apiKey={apiKey} />;
+};
+
+const MapScreenContent = ({ apiKey }: { apiKey: string }) => {
   const [activeFilter, setActiveFilter] = useState('all');
   const [markers, setMarkers] = useState<any[]>([]);
   const [selectedMarker, setSelectedMarker] = useState<any | null>(null);
   
   const { isLoaded, loadError } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || 'dummy_key'
+    googleMapsApiKey: apiKey
   });
 
   const [map, setMap] = useState<google.maps.Map | null>(null);
@@ -134,15 +152,7 @@ export const MapScreen = () => {
 
       {/* Google Map */}
       <div className="flex-grow relative bg-[#1e293b] w-full h-full">
-        {!import.meta.env.VITE_GOOGLE_MAPS_API_KEY ? (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-800 text-center p-6 z-20">
-            <AlertTriangle size={48} className="text-orange-500 mb-4" />
-            <h2 className="text-2xl font-bold text-white mb-2">Google Maps API Key Missing</h2>
-            <p className="text-slate-400 max-w-md">
-              Please add your Google Maps API key to the environment variables (VITE_GOOGLE_MAPS_API_KEY) to view the map.
-            </p>
-          </div>
-        ) : loadError ? (
+        {loadError ? (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-800 text-center p-6 z-20">
             <AlertTriangle size={48} className="text-red-500 mb-4" />
             <h2 className="text-2xl font-bold text-white mb-2">Error Loading Map</h2>
