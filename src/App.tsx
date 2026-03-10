@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
 import { AppProvider, useAppContext } from './store/AppContext';
-import { SplashScreen } from './components/SplashScreen';
-import { LoginScreen } from './components/LoginScreen';
+import { SplashScreen } from './components/SplashScreenView';
+import { LoginScreen } from './components/LoginScreenView';
 import { RoleSelection } from './components/RoleSelection';
-import { VerificationScreen } from './components/VerificationScreen';
+import { VerificationScreen } from './components/VerificationScreenView';
 import { Layout } from './components/Layout';
 import { DriverDashboard } from './components/Dashboard/DriverDashboard';
 import { MistriDashboard } from './components/Dashboard/MistriDashboard';
 import { OwnerDashboard } from './components/Dashboard/OwnerDashboard';
 import { DhabaDashboard } from './components/Dashboard/DhabaDashboard';
-import { MapScreen } from './components/MapScreen';
-import { CommunityScreen } from './components/CommunityScreen';
-import { HealthScreen } from './components/HealthScreen';
-import { ShortsScreen } from './components/ShortsScreen';
-import { ProfileScreen } from './components/ProfileScreen';
+import { MapScreen } from './components/MapScreenView';
+import { CommunityScreen } from './components/CommunityScreenView';
+import { HealthScreen } from './components/HealthScreenView';
+import { ShortsScreen } from './components/ShortsScreenView';
+import { ProfileScreen } from './components/ProfileScreenView';
 import { YodhaAssistant } from './components/YodhaAssistant';
 import { AdminDashboard } from './components/AdminDashboard';
 
