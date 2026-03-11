@@ -5,6 +5,12 @@ import { GoogleMap, useJsApiLoader, MarkerF, InfoWindowF } from '@react-google-m
 import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from '../services/firebase';
 
+declare global {
+  interface Window {
+    gm_authFailure: () => void;
+  }
+}
+
 const containerStyle = {
   width: '100%',
   height: '100%'
@@ -44,6 +50,15 @@ const MapScreenContent = ({ apiKey }: { apiKey: string }) => {
   });
 
   const [map, setMap] = useState<google.maps.Map | null>(null);
+  const [authError, setAuthError] = useState(false);
+
+  useEffect(() => {
+    // Google Maps calls this global function if authentication fails (e.g., invalid key, billing, restrictions)
+    window.gm_authFailure = () => {
+      console.error("Google Maps authentication failed. Check API key, billing, or restrictions.");
+      setAuthError(true);
+    };
+  }, []);
 
   const onLoad = useCallback(function callback(map: google.maps.Map) {
     setMap(map);
@@ -152,7 +167,18 @@ const MapScreenContent = ({ apiKey }: { apiKey: string }) => {
 
       {/* Google Map */}
       <div className="flex-grow relative bg-[#1e293b] w-full h-full">
-        {loadError ? (
+        {authError ? (
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-800 text-center p-6 z-20">
+            <ShieldAlert size={48} className="text-red-500 mb-4" />
+            <h2 className="text-2xl font-bold text-white mb-2">Map Access Denied</h2>
+            <p className="text-slate-400 max-w-md">
+              Google Maps rejected the API key. Please check Google Cloud Console for:
+              <br />1. Billing is enabled.
+              <br />2. HTTP Referrers are set correctly (e.g., <code className="bg-slate-700 px-1 rounded">*://*.vercel.app/*</code>).
+              <br />3. Maps JavaScript API is enabled.
+            </p>
+          </div>
+        ) : loadError ? (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-800 text-center p-6 z-20">
             <AlertTriangle size={48} className="text-red-500 mb-4" />
             <h2 className="text-2xl font-bold text-white mb-2">Error Loading Map</h2>
