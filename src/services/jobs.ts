@@ -14,6 +14,10 @@ export interface Job {
 }
 
 export const postJob = async (jobData: Omit<Job, 'id' | 'timestamp' | 'applicants' | 'status'>) => {
+  if (!db) {
+    console.warn("Firestore is not initialized. Job will not be saved.");
+    return "mock-id-" + Math.random();
+  }
   try {
     const docRef = await addDoc(collection(db, 'jobs'), {
       ...jobData,
@@ -29,6 +33,14 @@ export const postJob = async (jobData: Omit<Job, 'id' | 'timestamp' | 'applicant
 };
 
 export const subscribeToJobs = (callback: (jobs: Job[]) => void) => {
+  if (!db) {
+    console.warn("Firestore is not initialized. Using mock jobs.");
+    callback([
+      { id: '1', ownerId: 'demo', role: 'Long Haul Driver (Trailer)', company: 'Sharma Transport', route: 'Delhi ↔ Mumbai', salary: '₹30,000/mo', timestamp: new Date(), applicants: [], status: 'open' },
+      { id: '2', ownerId: 'demo', role: 'Local Delivery Driver', company: 'QuickLogistics', route: 'Jaipur City', salary: '₹18,000/mo', timestamp: new Date(), applicants: [], status: 'open' },
+    ]);
+    return () => {};
+  }
   const q = query(collection(db, 'jobs'), orderBy('timestamp', 'desc'));
   
   return onSnapshot(q, (snapshot) => {
@@ -48,6 +60,10 @@ export const subscribeToJobs = (callback: (jobs: Job[]) => void) => {
 };
 
 export const applyForJob = async (jobId: string, userId: string) => {
+  if (!db) {
+    console.warn("Firestore is not initialized. Mocking job application.");
+    return;
+  }
   try {
     const jobRef = doc(db, 'jobs', jobId);
     await updateDoc(jobRef, {

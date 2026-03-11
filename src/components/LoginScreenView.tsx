@@ -19,10 +19,10 @@ export const LoginScreen = ({ onLogin }: { onLogin: (phone: string, uid: string)
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
 
   // Debug info
-  const isConfigMissing = !auth.app.options.apiKey || auth.app.options.apiKey === 'mock-api-key' || auth.app.options.apiKey === '';
+  const isConfigMissing = !auth || !auth.app || !auth.app.options.apiKey || auth.app.options.apiKey === 'mock-api-key' || auth.app.options.apiKey === '';
 
   useEffect(() => {
-    if (isConfigMissing) return;
+    if (isConfigMissing || !auth) return;
     
     if (!window.recaptchaVerifier) {
       window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {

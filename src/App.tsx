@@ -11,7 +11,7 @@ import { OwnerDashboard } from './components/Dashboard/OwnerDashboard.tsx';
 import { DhabaDashboard } from './components/Dashboard/DhabaDashboard.tsx';
 import { MapScreen } from './components/MapScreenView.tsx';
 import { CommunityScreen } from './components/CommunityScreenView.tsx';
-import { HealthScreen } from './components/HealthScreenView.tsx';
+import { HealthScreen } from "./components/HealthScreenView.tsx";
 import { ShortsScreen } from './components/ShortsScreenView.tsx';
 import { ProfileScreen } from './components/ProfileScreenView.tsx';
 import { YodhaAssistant } from './components/YodhaAssistant.tsx';

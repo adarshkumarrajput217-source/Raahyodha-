@@ -18,11 +18,19 @@ export const AdminDashboard = () => {
       try {
         // In a real app, we'd fetch users from a 'users' collection
         // For now, we'll simulate user count and fetch real jobs
-        const jobsSnapshot = await getDocs(collection(db, 'jobs'));
         const fetchedJobs: Job[] = [];
-        jobsSnapshot.forEach(doc => {
-          fetchedJobs.push({ id: doc.id, ...doc.data() } as Job);
-        });
+        if (db) {
+          const jobsSnapshot = await getDocs(collection(db, 'jobs'));
+          jobsSnapshot.forEach(doc => {
+            fetchedJobs.push({ id: doc.id, ...doc.data() } as Job);
+          });
+        } else {
+          console.warn("Firestore is not initialized. Using mock jobs for admin.");
+          fetchedJobs.push(
+            { id: '1', ownerId: 'demo', role: 'Long Haul Driver (Trailer)', company: 'Sharma Transport', route: 'Delhi ↔ Mumbai', salary: '₹30,000/mo', timestamp: new Date(), applicants: [], status: 'open' },
+            { id: '2', ownerId: 'demo', role: 'Local Delivery Driver', company: 'QuickLogistics', route: 'Jaipur City', salary: '₹18,000/mo', timestamp: new Date(), applicants: [], status: 'open' }
+          );
+        }
 
         setJobs(fetchedJobs);
         setStats({
