@@ -55,7 +55,6 @@ export const LoginScreen = ({ onLogin }: { onLogin: (phone: string, uid: string)
       setStep('otp');
     } catch (err: any) {
       console.error('Error sending OTP:', err);
-      
       if (err.code === 'auth/captcha-check-failed' || err.message?.includes('captcha-check-failed')) {
         setError(`Hostname match not found. Please add this exact domain to Firebase Authorized Domains: ${window.location.hostname}`);
       } else {
@@ -146,6 +145,7 @@ export const LoginScreen = ({ onLogin }: { onLogin: (phone: string, uid: string)
             >
               {loading ? <Loader2 className="animate-spin" size={24} /> : <><span className="mr-2">Send OTP</span> <ArrowRight size={20} /></>}
             </button>
+
           </form>
         ) : (
           <form onSubmit={handleVerifyOtp} className="space-y-6">

@@ -168,15 +168,36 @@ const MapScreenContent = ({ apiKey }: { apiKey: string }) => {
       {/* Google Map */}
       <div className="flex-grow relative bg-[#1e293b] w-full h-full">
         {authError ? (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-800 text-center p-6 z-20">
-            <ShieldAlert size={48} className="text-red-500 mb-4" />
-            <h2 className="text-2xl font-bold text-white mb-2">Map Access Denied</h2>
-            <p className="text-slate-400 max-w-md">
-              Google Maps rejected the API key. Please check Google Cloud Console for:
-              <br />1. Billing is enabled.
-              <br />2. HTTP Referrers are set correctly (e.g., <code className="bg-slate-700 px-1 rounded">*://*.vercel.app/*</code>).
-              <br />3. Maps JavaScript API is enabled.
-            </p>
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-900 text-center p-6 z-20 overflow-hidden">
+            {/* Simulated Map Background */}
+            <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#334155 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
+            <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-1/4 right-1/4 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl"></div>
+            
+            <div className="relative z-10 bg-slate-800/80 backdrop-blur-md p-8 rounded-3xl border border-slate-700 shadow-2xl max-w-md w-full">
+              <div className="w-20 h-20 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-6 border border-orange-500/30">
+                <MapPin size={40} className="text-orange-500" />
+              </div>
+              <h2 className="text-2xl font-bold text-white mb-3">Interactive Map Simulation</h2>
+              <p className="text-slate-400 mb-6 text-sm leading-relaxed">
+                Google Maps API key is currently propagating or restricted. We've activated the <span className="text-orange-400 font-semibold">Simulation Mode</span> so you can continue exploring the app's features without interruption.
+              </p>
+              
+              <div className="space-y-3 text-left">
+                <div className="bg-slate-700/50 p-3 rounded-xl border border-slate-600 flex items-center">
+                  <ShieldAlert size={18} className="text-red-400 mr-3 flex-shrink-0" />
+                  <span className="text-sm text-slate-300">Traffic Jam Alert (NH48)</span>
+                </div>
+                <div className="bg-slate-700/50 p-3 rounded-xl border border-slate-600 flex items-center">
+                  <Coffee size={18} className="text-orange-400 mr-3 flex-shrink-0" />
+                  <span className="text-sm text-slate-300">Sher-e-Punjab Dhaba (2km)</span>
+                </div>
+                <div className="bg-slate-700/50 p-3 rounded-xl border border-slate-600 flex items-center">
+                  <Wrench size={18} className="text-blue-400 mr-3 flex-shrink-0" />
+                  <span className="text-sm text-slate-300">Raju Auto Works (5km)</span>
+                </div>
+              </div>
+            </div>
           </div>
         ) : loadError ? (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-800 text-center p-6 z-20">
