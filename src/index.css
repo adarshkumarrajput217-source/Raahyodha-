@@ -1,9 +1,18 @@
 @import "tailwindcss";
 
 @theme {
+  --color-primary: #FF6200;
+  --color-darkBg: #0F0F0F;
+  --color-card: #1E1E1E;
+  --color-textLight: #E0E0E0;
+
+  --font-heading: "Poppins", sans-serif;
+  --font-body: "Inter", sans-serif;
+
   --animate-shimmer: shimmer 2s linear infinite;
   --animate-dash: dash 20s linear infinite;
   --animate-spin-slow: spin 3s linear infinite;
+  --animate-marquee: marquee 25s linear infinite;
   
   @keyframes shimmer {
     from {
@@ -18,6 +27,24 @@
     to {
       stroke-dashoffset: -1000;
     }
+  }
+
+  @keyframes marquee {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-100%); }
+  }
+}
+
+@layer base {
+  html.dark {
+    filter: invert(1) hue-rotate(180deg);
+    background-color: #111;
+  }
+  html.dark img,
+  html.dark video,
+  html.dark svg.lucide,
+  html.dark .no-invert {
+    filter: invert(1) hue-rotate(180deg);
   }
 }
 

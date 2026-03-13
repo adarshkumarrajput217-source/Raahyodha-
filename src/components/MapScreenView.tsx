@@ -1,72 +1,58 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { MapPin, Navigation, AlertTriangle, Coffee, Wrench, Search, Crosshair, ShieldAlert } from 'lucide-react';
-import { GoogleMap, useJsApiLoader, MarkerF, InfoWindowF } from '@react-google-maps/api';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from '../services/firebase';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
 
-declare global {
-  interface Window {
-    gm_authFailure: () => void;
-  }
-}
+// Fix for default marker icons in Leaflet with bundlers
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+});
 
-const containerStyle = {
-  width: '100%',
-  height: '100%'
+// Custom Icons
+const createCustomIcon = (color: string) => {
+  return new L.DivIcon({
+    className: 'custom-leaflet-icon',
+    html: `<div style="background-color: ${color}; width: 24px; height: 24px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.3);"></div>`,
+    iconSize: [24, 24],
+    iconAnchor: [12, 12],
+  });
 };
 
-const defaultCenter = {
-  lat: 28.6139,
-  lng: 77.2090 // Delhi
+const icons = {
+  dhaba: createCustomIcon('#FF6200'), // primary
+  mistri: createCustomIcon('#3b82f6'), // blue
+  alert: createCustomIcon('#ef4444'), // red
+  bribe: createCustomIcon('#ef4444'), // red
+};
+
+const defaultCenter: [number, number] = [28.6139, 77.2090]; // Delhi
+
+// Component to handle map panning
+const MapController = ({ center, zoom }: { center: [number, number], zoom: number }) => {
+  const map = useMap();
+  useEffect(() => {
+    map.setView(center, zoom);
+  }, [center, zoom, map]);
+  return null;
 };
 
 export const MapScreen = () => {
-  const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-
-  if (!apiKey) {
-    return (
-      <div className="relative h-[calc(100vh-64px)] md:h-[calc(100vh-64px)] w-full bg-slate-800 overflow-hidden flex flex-col items-center justify-center p-6 text-center">
-        <AlertTriangle size={48} className="text-orange-500 mb-4" />
-        <h2 className="text-2xl font-bold text-white mb-2">Google Maps API Key Missing</h2>
-        <p className="text-slate-400 max-w-md">
-          Please add your Google Maps API key to the environment variables (VITE_GOOGLE_MAPS_API_KEY) to view the map.
-        </p>
-      </div>
-    );
-  }
-
-  return <MapScreenContent apiKey={apiKey} />;
+  return <MapScreenContent />;
 };
 
-const MapScreenContent = ({ apiKey }: { apiKey: string }) => {
+const MapScreenContent = () => {
   const [activeFilter, setActiveFilter] = useState('all');
   const [markers, setMarkers] = useState<any[]>([]);
   const [selectedMarker, setSelectedMarker] = useState<any | null>(null);
-  
-  const { isLoaded, loadError } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: apiKey
-  });
-
-  const [map, setMap] = useState<google.maps.Map | null>(null);
-  const [authError, setAuthError] = useState(false);
-
-  useEffect(() => {
-    // Google Maps calls this global function if authentication fails (e.g., invalid key, billing, restrictions)
-    window.gm_authFailure = () => {
-      console.error("Google Maps authentication failed. Check API key, billing, or restrictions.");
-      setAuthError(true);
-    };
-  }, []);
-
-  const onLoad = useCallback(function callback(map: google.maps.Map) {
-    setMap(map);
-  }, []);
-
-  const onUnmount = useCallback(function callback() {
-    setMap(null);
-  }, []);
+  const [mapCenter, setMapCenter] = useState<[number, number]>(defaultCenter);
+  const [mapZoom, setMapZoom] = useState(10);
 
   useEffect(() => {
     // Fetch real-time alerts and rest stops from Firestore
@@ -131,11 +117,16 @@ const MapScreenContent = ({ apiKey }: { apiKey: string }) => {
     ? markers 
     : markers.filter(m => m.type === activeFilter || (activeFilter === 'alert' && m.type === 'bribe'));
 
+  const handleRecenter = () => {
+    setMapCenter([...defaultCenter]);
+    setMapZoom(14);
+  };
+
   return (
-    <div className="relative h-[calc(100vh-64px)] md:h-[calc(100vh-64px)] w-full bg-slate-800 overflow-hidden flex flex-col">
+    <div className="relative h-[calc(100vh-64px)] md:h-[calc(100vh-64px)] w-full bg-card overflow-hidden flex flex-col">
       {/* Search Bar */}
-      <div className="absolute top-4 left-4 right-4 z-10">
-        <div className="bg-slate-800/90 backdrop-blur-md border border-slate-700 rounded-full flex items-center px-4 py-3 shadow-lg">
+      <div className="absolute top-4 left-4 right-4 z-[1000]">
+        <div className="bg-card/90 backdrop-blur-md border border-slate-700 rounded-full flex items-center px-4 py-3 shadow-lg">
           <Search size={20} className="text-slate-400 mr-3" />
           <input 
             type="text" 
@@ -146,7 +137,7 @@ const MapScreenContent = ({ apiKey }: { apiKey: string }) => {
       </div>
 
       {/* Filters */}
-      <div className="absolute top-20 left-4 right-4 z-10 overflow-x-auto scrollbar-hide">
+      <div className="absolute top-20 left-4 right-4 z-[1000] overflow-x-auto scrollbar-hide">
         <div className="flex space-x-2 pb-2">
           {filters.map(filter => (
             <button
@@ -154,8 +145,8 @@ const MapScreenContent = ({ apiKey }: { apiKey: string }) => {
               onClick={() => setActiveFilter(filter.id)}
               className={`flex items-center px-4 py-2 rounded-full whitespace-nowrap transition shadow-md border ${
                 activeFilter === filter.id 
-                  ? 'bg-orange-600 text-white border-orange-500' 
-                  : 'bg-slate-800/90 text-slate-300 border-slate-700 hover:bg-slate-700'
+                  ? 'bg-primary text-white border-primary' 
+                  : 'bg-card/90 text-textLight border-slate-700 hover:bg-slate-700'
               }`}
             >
               <filter.icon size={16} className="mr-2" />
@@ -165,189 +156,57 @@ const MapScreenContent = ({ apiKey }: { apiKey: string }) => {
         </div>
       </div>
 
-      {/* Google Map */}
-      <div className="flex-grow relative bg-[#1e293b] w-full h-full">
-        {authError ? (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-900 text-center p-6 z-20 overflow-hidden">
-            {/* Simulated Map Background */}
-            <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#334155 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
-            <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl"></div>
-            <div className="absolute bottom-1/4 right-1/4 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl"></div>
+      {/* Leaflet Map */}
+      <div className="flex-grow relative bg-[#1e293b] w-full h-full z-0">
+        <MapContainer 
+          center={defaultCenter} 
+          zoom={10} 
+          style={{ height: '100%', width: '100%' }}
+          zoomControl={false}
+        >
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+            url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+          />
+          <MapController center={mapCenter} zoom={mapZoom} />
+          
+          {filteredMarkers.map((marker) => {
+            const iconType = marker.type as keyof typeof icons;
+            const icon = icons[iconType] || icons.alert;
             
-            <div className="relative z-10 bg-slate-800/80 backdrop-blur-md p-8 rounded-3xl border border-slate-700 shadow-2xl max-w-md w-full">
-              <div className="w-20 h-20 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-6 border border-orange-500/30">
-                <MapPin size={40} className="text-orange-500" />
-              </div>
-              <h2 className="text-2xl font-bold text-white mb-3">Interactive Map Simulation</h2>
-              <p className="text-slate-400 mb-6 text-sm leading-relaxed">
-                Google Maps API key is currently propagating or restricted. We've activated the <span className="text-orange-400 font-semibold">Simulation Mode</span> so you can continue exploring the app's features without interruption.
-              </p>
-              
-              <div className="space-y-3 text-left">
-                <div className="bg-slate-700/50 p-3 rounded-xl border border-slate-600 flex items-center">
-                  <ShieldAlert size={18} className="text-red-400 mr-3 flex-shrink-0" />
-                  <span className="text-sm text-slate-300">Traffic Jam Alert (NH48)</span>
-                </div>
-                <div className="bg-slate-700/50 p-3 rounded-xl border border-slate-600 flex items-center">
-                  <Coffee size={18} className="text-orange-400 mr-3 flex-shrink-0" />
-                  <span className="text-sm text-slate-300">Sher-e-Punjab Dhaba (2km)</span>
-                </div>
-                <div className="bg-slate-700/50 p-3 rounded-xl border border-slate-600 flex items-center">
-                  <Wrench size={18} className="text-blue-400 mr-3 flex-shrink-0" />
-                  <span className="text-sm text-slate-300">Raju Auto Works (5km)</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        ) : loadError ? (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-800 text-center p-6 z-20">
-            <AlertTriangle size={48} className="text-red-500 mb-4" />
-            <h2 className="text-2xl font-bold text-white mb-2">Error Loading Map</h2>
-            <p className="text-slate-400 max-w-md">
-              There was a problem loading Google Maps. Please check your API key and network connection.
-            </p>
-          </div>
-        ) : isLoaded ? (
-          <GoogleMap
-            mapContainerStyle={containerStyle}
-            center={defaultCenter}
-            zoom={10}
-            onLoad={onLoad}
-            onUnmount={onUnmount}
-            options={{
-              styles: [
-                { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
-                { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
-                { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
-                {
-                  featureType: "administrative.locality",
-                  elementType: "labels.text.fill",
-                  stylers: [{ color: "#d59563" }],
-                },
-                {
-                  featureType: "poi",
-                  elementType: "labels.text.fill",
-                  stylers: [{ color: "#d59563" }],
-                },
-                {
-                  featureType: "poi.park",
-                  elementType: "geometry",
-                  stylers: [{ color: "#263c3f" }],
-                },
-                {
-                  featureType: "poi.park",
-                  elementType: "labels.text.fill",
-                  stylers: [{ color: "#6b9a76" }],
-                },
-                {
-                  featureType: "road",
-                  elementType: "geometry",
-                  stylers: [{ color: "#38414e" }],
-                },
-                {
-                  featureType: "road",
-                  elementType: "geometry.stroke",
-                  stylers: [{ color: "#212a37" }],
-                },
-                {
-                  featureType: "road",
-                  elementType: "labels.text.fill",
-                  stylers: [{ color: "#9ca5b3" }],
-                },
-                {
-                  featureType: "road.highway",
-                  elementType: "geometry",
-                  stylers: [{ color: "#746855" }],
-                },
-                {
-                  featureType: "road.highway",
-                  elementType: "geometry.stroke",
-                  stylers: [{ color: "#1f2835" }],
-                },
-                {
-                  featureType: "road.highway",
-                  elementType: "labels.text.fill",
-                  stylers: [{ color: "#f3d19c" }],
-                },
-                {
-                  featureType: "transit",
-                  elementType: "geometry",
-                  stylers: [{ color: "#2f3948" }],
-                },
-                {
-                  featureType: "transit.station",
-                  elementType: "labels.text.fill",
-                  stylers: [{ color: "#d59563" }],
-                },
-                {
-                  featureType: "water",
-                  elementType: "geometry",
-                  stylers: [{ color: "#17263c" }],
-                },
-                {
-                  featureType: "water",
-                  elementType: "labels.text.fill",
-                  stylers: [{ color: "#515c6d" }],
-                },
-                {
-                  featureType: "water",
-                  elementType: "labels.text.stroke",
-                  stylers: [{ color: "#17263c" }],
-                },
-              ],
-              disableDefaultUI: true,
-              zoomControl: true,
-            }}
-          >
-            {filteredMarkers.map((marker) => (
-              <MarkerF
+            return (
+              <Marker
                 key={marker.id}
-                position={{ lat: Number(marker.lat), lng: Number(marker.lng) }}
-                onClick={() => setSelectedMarker(marker)}
-                icon={{
-                  url: marker.type === 'dhaba' ? 'https://maps.google.com/mapfiles/ms/icons/orange-dot.png' :
-                       marker.type === 'mistri' ? 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png' :
-                       'https://maps.google.com/mapfiles/ms/icons/red-dot.png'
+                position={[Number(marker.lat), Number(marker.lng)]}
+                icon={icon}
+                eventHandlers={{
+                  click: () => setSelectedMarker(marker),
                 }}
-              />
-            ))}
-
-            {selectedMarker && (
-              <InfoWindowF
-                position={{ lat: Number(selectedMarker.lat), lng: Number(selectedMarker.lng) }}
-                onCloseClick={() => setSelectedMarker(null)}
               >
-                <div className="p-2 text-slate-900 max-w-[200px]">
-                  <h3 className="font-bold text-lg mb-1">{selectedMarker.title}</h3>
-                  <p className="text-sm text-slate-600 mb-2">{selectedMarker.description}</p>
-                  <button className="w-full bg-orange-500 text-white py-1.5 rounded-md text-sm font-medium">
-                    Navigate
-                  </button>
-                </div>
-              </InfoWindowF>
-            )}
-          </GoogleMap>
-        ) : (
-          <div className="absolute inset-0 flex items-center justify-center bg-slate-800 z-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
-          </div>
-        )}
+                <Popup className="custom-popup">
+                  <div className="p-1 text-slate-900 max-w-[200px]">
+                    <h3 className="font-heading font-bold text-lg mb-1">{marker.title}</h3>
+                    <p className="text-sm text-slate-600 mb-2">{marker.description}</p>
+                    <button className="w-full bg-primary text-white py-1.5 rounded-md text-sm font-heading font-bold">
+                      Navigate
+                    </button>
+                  </div>
+                </Popup>
+              </Marker>
+            );
+          })}
+        </MapContainer>
       </div>
 
       {/* Action Buttons */}
-      <div className="absolute bottom-6 right-4 flex flex-col space-y-3 z-10">
+      <div className="absolute bottom-6 right-4 flex flex-col space-y-3 z-[1000]">
         <button 
-          onClick={() => {
-            if (map) {
-              map.panTo(defaultCenter);
-              map.setZoom(14);
-            }
-          }}
-          className="bg-slate-800 p-3 rounded-full shadow-lg border border-slate-700 text-slate-300 hover:text-white hover:bg-slate-700 transition"
+          onClick={handleRecenter}
+          className="bg-card p-3 rounded-full shadow-lg border border-slate-700 text-textLight hover:text-white hover:bg-slate-700 transition"
         >
           <Crosshair size={24} />
         </button>
-        <button className="bg-orange-600 p-4 rounded-full shadow-[0_0_20px_rgba(234,88,12,0.4)] border border-orange-500 text-white hover:bg-orange-500 transition">
+        <button className="bg-primary p-4 rounded-full shadow-[0_0_20px_rgba(255,98,0,0.4)] border border-primary text-white hover:bg-primary transition">
           <Navigation size={24} />
         </button>
       </div>

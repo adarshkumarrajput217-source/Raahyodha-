@@ -30,8 +30,8 @@ export const ShortsScreen = () => {
     <div className="relative h-[calc(100vh-64px)] md:h-[calc(100vh-64px)] w-full bg-black overflow-hidden flex flex-col snap-y snap-mandatory">
       {/* Top Overlay */}
       <div className="absolute top-0 left-0 right-0 z-10 p-4 flex justify-between items-center bg-gradient-to-b from-black/60 to-transparent">
-        <h2 className="text-xl font-bold text-white tracking-wider">Yodha Shorts</h2>
-        <button className="bg-orange-600 hover:bg-orange-700 text-white p-2 rounded-full transition shadow-lg shadow-orange-600/30">
+        <h2 className="text-xl font-heading font-bold text-white tracking-wider">Yodha Shorts</h2>
+        <button className="bg-primary hover:bg-orange-700 text-white p-2 rounded-full transition shadow-lg shadow-orange-600/30">
           <Plus size={24} />
         </button>
       </div>
@@ -39,7 +39,7 @@ export const ShortsScreen = () => {
       {/* Video Feed */}
       <div className="flex-grow overflow-y-scroll snap-y snap-mandatory scrollbar-hide relative">
         {videos.map((video, index) => (
-          <div key={video.id} className="h-full w-full snap-start snap-always relative bg-slate-900 flex items-center justify-center">
+          <div key={video.id} className="h-full w-full snap-start snap-always relative bg-darkBg flex items-center justify-center">
             {/* Simulated Video Player */}
             <video
               className="h-full w-full object-cover"
@@ -59,7 +59,7 @@ export const ShortsScreen = () => {
             <div className="absolute right-4 bottom-24 flex flex-col items-center space-y-6 z-10">
               <div className="w-12 h-12 rounded-full bg-slate-700 border-2 border-white overflow-hidden relative">
                 <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${video.author}`} alt="Avatar" className="w-full h-full object-cover" />
-                <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-orange-500 rounded-full p-0.5">
+                <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-primary rounded-full p-0.5">
                   <Plus size={12} className="text-white" />
                 </div>
               </div>

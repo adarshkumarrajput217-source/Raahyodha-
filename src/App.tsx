@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { AppProvider, useAppContext } from './store/AppContext';
 import { SplashScreen } from './components/SplashScreenView.tsx';
 import { LoginScreen } from './components/LoginScreenView.tsx';
 import { RoleSelection } from './components/RoleSelection.tsx';
-import { VerificationScreen } from './components/VerificationScreenView.tsx';
 import { Layout } from './components/Layout.tsx';
 import { DriverDashboard } from './components/Dashboard/DriverDashboard.tsx';
 import { MistriDashboard } from './components/Dashboard/MistriDashboard.tsx';
@@ -14,7 +13,7 @@ import { CommunityScreen } from './components/CommunityScreenView.tsx';
 import { HealthScreen } from "./components/HealthScreenView.tsx";
 import { ShortsScreen } from './components/ShortsScreenView.tsx';
 import { ProfileScreen } from './components/ProfileScreenView.tsx';
-import { YodhaAssistant } from './components/YodhaAssistant.tsx';
+import { YodhaScreen } from './components/YodhaScreenView.tsx';
 import { AdminDashboard } from './components/AdminDashboard.tsx';
 
 const MainApp = () => {
@@ -50,21 +49,6 @@ const MainApp = () => {
     );
   }
 
-  if (!user.isVerified) {
-    return (
-      <VerificationScreen
-        role={user.role}
-        onComplete={() => {
-          setUser({ 
-            ...user, 
-            isVerified: true, 
-            joinedDate: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) 
-          });
-        }}
-      />
-    );
-  }
-
   const renderTabContent = () => {
     switch (activeTab) {
       case 'home':
@@ -79,6 +63,7 @@ const MainApp = () => {
       case 'community': return <CommunityScreen />;
       case 'health': return <HealthScreen />;
       case 'shorts': return <ShortsScreen />;
+      case 'yodha': return <YodhaScreen />;
       case 'profile': return <ProfileScreen />;
       default: return <DriverDashboard />;
     }
@@ -87,7 +72,6 @@ const MainApp = () => {
   return (
     <Layout>
       {renderTabContent()}
-      <YodhaAssistant />
     </Layout>
   );
 };

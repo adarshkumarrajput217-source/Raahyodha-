@@ -1,18 +1,44 @@
 import React from 'react';
-import { HeartPulse, Activity, Apple, Moon, ShieldAlert } from 'lucide-react';
+import { HeartPulse, Activity, Apple, Moon, ShieldAlert, AlertTriangle } from 'lucide-react';
 import { motion } from 'motion/react';
+
+const safetySlogans = [
+  "🚫 शराब पीकर वाहन न चलाएं",
+  "💺 सीटबेल्ट हमेशा पहनें",
+  "🛑 नींद आने पर वाहन रोक कर आराम करें",
+  "⚠️ तेज़ रफ़्तार, जान का ख़तरा",
+  "📱 वाहन चलाते समय मोबाइल का प्रयोग न करें",
+  "🛣️ सड़क सुरक्षा, जीवन रक्षा"
+];
 
 export const HealthScreen = () => {
   return (
     <div className="p-4 space-y-6 pb-24">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-2">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Health & Wellness</h1>
+          <h1 className="text-2xl font-heading font-bold text-slate-900">Health & Wellness</h1>
           <p className="text-slate-500 text-sm">Stay fit on the road</p>
         </div>
         <div className="bg-red-100 p-3 rounded-full">
           <HeartPulse className="text-red-500" size={24} />
         </div>
+      </div>
+
+      {/* Safety Marquee */}
+      <div className="overflow-hidden bg-red-50 border border-red-200 rounded-xl py-2.5 flex items-center shadow-sm relative">
+        <div className="absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-red-50 to-transparent z-10"></div>
+        <div className="absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-red-50 to-transparent z-10"></div>
+        <motion.div
+          className="flex whitespace-nowrap gap-8 px-4"
+          animate={{ x: ["0%", "-50%"] }}
+          transition={{ repeat: Infinity, ease: "linear", duration: 25 }}
+        >
+          {[...safetySlogans, ...safetySlogans, ...safetySlogans, ...safetySlogans].map((slogan, index) => (
+            <span key={index} className="font-bold text-red-600 text-sm flex-shrink-0">
+              {slogan}
+            </span>
+          ))}
+        </motion.div>
       </div>
 
       {/* Quick Stats */}

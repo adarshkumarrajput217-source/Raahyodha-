@@ -56,8 +56,8 @@ export const AdminDashboard = () => {
     <div className="p-6 space-y-6 max-w-7xl mx-auto pb-24">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-white flex items-center">
-            <ShieldCheck className="mr-3 text-orange-500" size={32} />
+          <h1 className="text-3xl font-heading font-bold text-white flex items-center">
+            <ShieldCheck className="mr-3 text-primary" size={32} />
             Admin Control Panel
           </h1>
           <p className="text-slate-400 mt-1">Manage users, jobs, and platform health</p>
@@ -69,7 +69,7 @@ export const AdminDashboard = () => {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-lg">
+        <div className="bg-card p-6 rounded-2xl border border-slate-700 shadow-lg">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-slate-400 text-sm font-medium uppercase tracking-wider">Total Users</p>
@@ -117,7 +117,7 @@ export const AdminDashboard = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-900/50 text-slate-400 text-sm uppercase tracking-wider">
+              <tr className="bg-darkBg/50 text-slate-400 text-sm uppercase tracking-wider">
                 <th className="p-4 font-medium">Role</th>
                 <th className="p-4 font-medium">Company</th>
                 <th className="p-4 font-medium">Route</th>
@@ -135,7 +135,7 @@ export const AdminDashboard = () => {
                 jobs.map(job => (
                   <tr key={job.id} className="hover:bg-slate-700/30 transition">
                     <td className="p-4 text-white font-medium">{job.role}</td>
-                    <td className="p-4 text-slate-300">{job.company}</td>
+                    <td className="p-4 text-textLight">{job.company}</td>
                     <td className="p-4 text-slate-300">{job.route}</td>
                     <td className="p-4 text-green-400 font-medium">{job.salary}</td>
                     <td className="p-4 text-center">
