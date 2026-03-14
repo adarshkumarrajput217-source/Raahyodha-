@@ -101,6 +101,9 @@ export const LoginScreen = ({ onLogin }: { onLogin: (phone: string, uid: string)
             alt="Raahyodha Logo" 
             className="w-full h-full object-contain drop-shadow-xl"
             referrerPolicy="no-referrer"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = "/icons/icon-1024x1024.png";
+            }}
           />
         </div>
 

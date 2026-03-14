@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'motion/react';
-import { MapPin, Clock, Coffee, AlertTriangle, Navigation, Package, ChevronRight, MessageSquare, Briefcase, Loader2, CheckCircle2, Search, HeartPulse, Users, Car, FileText, CreditCard, ShieldCheck } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { MapPin, Clock, Coffee, AlertTriangle, Navigation, Package, ChevronRight, MessageSquare, Briefcase, Loader2, CheckCircle2, Search, HeartPulse, Users, Car, FileText, CreditCard, ShieldCheck, Truck } from 'lucide-react';
 import { generateAIResponse } from '../../services/gemini';
 import { subscribeToJobs, applyForJob, Job } from '../../services/jobs';
 import { useAppContext } from '../../store/AppContext';
+import { ChallanCheckModal } from '../ChallanCheckModal';
+import { RCCheckModal } from '../RCCheckModal';
 
 export const DriverDashboard = () => {
   const { user, t } = useAppContext();
@@ -12,6 +14,8 @@ export const DriverDashboard = () => {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [applyingTo, setApplyingTo] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isChallanModalOpen, setIsChallanModalOpen] = useState(false);
+  const [isRCModalOpen, setIsRCModalOpen] = useState(false);
 
   const allDhabas = [
     { name: 'Sher-e-Punjab Dhaba', dist: '2.5 km', rating: 4.5, type: 'Veg/Non-Veg' },
@@ -141,30 +145,6 @@ export const DriverDashboard = () => {
         </div>
       </div>
 
-      {/* Vehicle Related Services */}
-      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm relative opacity-90">
-        <div className="p-3 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
-          <h3 className="font-bold text-slate-900 flex items-center text-sm">
-            <Car size={16} className="mr-2 text-indigo-500" /> Vehicle Related Services
-          </h3>
-          <span className="text-[9px] font-bold uppercase tracking-wider bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full">Coming Soon</span>
-        </div>
-        <div className="grid grid-cols-3 divide-x divide-slate-100 pointer-events-none grayscale-[30%]">
-          <button className="flex flex-col items-center justify-center p-3 hover:bg-slate-50 transition-colors">
-            <FileText size={22} className="text-orange-500 mb-2" />
-            <span className="text-[11px] font-semibold text-slate-700 text-center leading-tight">Check<br/>Challan</span>
-          </button>
-          <button className="flex flex-col items-center justify-center p-3 hover:bg-slate-50 transition-colors">
-            <CreditCard size={22} className="text-blue-500 mb-2" />
-            <span className="text-[11px] font-semibold text-slate-700 text-center leading-tight">Check<br/>RC</span>
-          </button>
-          <button className="flex flex-col items-center justify-center p-3 hover:bg-slate-50 transition-colors">
-            <ShieldCheck size={22} className="text-green-500 mb-2" />
-            <span className="text-[11px] font-semibold text-slate-700 text-center leading-tight">Check<br/>Licence</span>
-          </button>
-        </div>
-      </div>
-
       {/* Nearby Dhabas */}
       <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
         <div className="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
@@ -218,8 +198,16 @@ export const DriverDashboard = () => {
                       <h4 className="text-sm font-bold text-slate-900">{job.role}</h4>
                       <p className="text-xs text-slate-500 mt-0.5">{job.company}</p>
                     </div>
-                    <span className="text-green-600 font-bold text-sm">{job.salary}</span>
+                    <div className="text-right">
+                      <span className="text-green-600 font-bold text-sm block">{job.salary}</span>
+                      {job.netEarnings && <span className="text-[10px] text-slate-500">Net: {job.netEarnings}</span>}
+                    </div>
                   </div>
+                  {job.vehicleType && (
+                    <div className="flex items-center text-xs text-slate-600 mb-2 bg-slate-100 px-2 py-1 rounded w-fit">
+                      <Truck size={12} className="mr-1" /> {job.vehicleType}
+                    </div>
+                  )}
                   <div className="flex justify-between items-center text-xs text-slate-500 mt-2">
                     <span className="flex items-center"><MapPin size={12} className="mr-1" /> {job.route}</span>
                     <button 
@@ -241,6 +229,51 @@ export const DriverDashboard = () => {
           )}
         </div>
       </div>
+      {/* Vehicle Related Services */}
+      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm relative opacity-90 mt-6">
+        <div className="p-3 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+          <h3 className="font-bold text-slate-900 flex items-center text-sm">
+            <Car size={16} className="mr-2 text-indigo-500" /> Vehicle Related Services
+          </h3>
+          <span className="text-[9px] font-bold uppercase tracking-wider bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full">Coming Soon</span>
+        </div>
+        <div className="grid grid-cols-2 gap-[1px] bg-slate-100">
+          <button 
+            onClick={() => setIsChallanModalOpen(true)}
+            className="flex flex-col items-center justify-center p-4 bg-white hover:bg-slate-50 transition-colors"
+          >
+            <FileText size={24} className="text-orange-500 mb-2" />
+            <span className="text-xs font-semibold text-slate-700 text-center leading-tight">Check<br/>Challan</span>
+          </button>
+          <button 
+            onClick={() => setIsRCModalOpen(true)}
+            className="flex flex-col items-center justify-center p-4 bg-white hover:bg-slate-50 transition-colors"
+          >
+            <CreditCard size={24} className="text-blue-500 mb-2" />
+            <span className="text-xs font-semibold text-slate-700 text-center leading-tight">Check<br/>RC</span>
+          </button>
+          <button className="flex flex-col items-center justify-center p-4 bg-white opacity-50 cursor-not-allowed relative">
+            <ShieldCheck size={24} className="text-green-500 mb-2" />
+            <span className="text-xs font-semibold text-slate-700 text-center leading-tight">Check<br/>Licence</span>
+            <span className="absolute top-2 right-2 text-[8px] font-bold uppercase tracking-wider bg-slate-200 text-slate-500 px-1.5 py-0.5 rounded">Soon</span>
+          </button>
+          <button className="flex flex-col items-center justify-center p-4 bg-white opacity-50 cursor-not-allowed relative">
+            <HeartPulse size={24} className="text-red-500 mb-2" />
+            <span className="text-xs font-semibold text-slate-700 text-center leading-tight">Yodha Loans<br/>& Life Beema</span>
+            <span className="absolute top-2 right-2 text-[8px] font-bold uppercase tracking-wider bg-slate-200 text-slate-500 px-1.5 py-0.5 rounded">Soon</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Challan Modal */}
+      <AnimatePresence>
+        {isChallanModalOpen && (
+          <ChallanCheckModal isOpen={isChallanModalOpen} onClose={() => setIsChallanModalOpen(false)} />
+        )}
+        {isRCModalOpen && (
+          <RCCheckModal isOpen={isRCModalOpen} onClose={() => setIsRCModalOpen(false)} />
+        )}
+      </AnimatePresence>
     </div>
   );
 };

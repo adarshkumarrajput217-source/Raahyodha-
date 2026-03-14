@@ -1,6 +1,7 @@
 import React from 'react';
-import { HeartPulse, Activity, Apple, Moon, ShieldAlert, AlertTriangle } from 'lucide-react';
+import { HeartPulse, Activity, Apple, Moon, ShieldAlert, AlertTriangle, HelpCircle, PhoneCall } from 'lucide-react';
 import { motion } from 'motion/react';
+import { useAppContext } from '../store/AppContext';
 
 const safetySlogans = [
   "🚫 शराब पीकर वाहन न चलाएं",
@@ -12,6 +13,8 @@ const safetySlogans = [
 ];
 
 export const HealthScreen = () => {
+  const { t } = useAppContext();
+
   return (
     <div className="p-4 space-y-6 pb-24">
       <div className="flex items-center justify-between mb-2">
@@ -90,10 +93,46 @@ export const HealthScreen = () => {
       {/* Emergency Contacts */}
       <div>
         <h2 className="text-lg font-bold text-slate-800 mb-3">Emergency Help</h2>
-        <button className="w-full bg-red-50 text-red-600 border border-red-200 p-4 rounded-2xl flex items-center justify-center space-x-2 font-bold hover:bg-red-100 transition">
+        <a href="tel:108" className="w-full bg-red-50 text-red-600 border border-red-200 p-4 rounded-2xl flex items-center justify-center space-x-2 font-bold hover:bg-red-100 transition mb-3">
           <ShieldAlert size={20} />
           <span>Call Ambulance (108)</span>
-        </button>
+        </a>
+      </div>
+
+      {/* Help & Support */}
+      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm mt-6">
+        <div className="p-5 border-b border-slate-200 bg-slate-50">
+          <h3 className="font-bold text-slate-900 text-lg flex items-center">
+            <HelpCircle size={20} className="mr-2 text-blue-500" /> {t('Help & Support')}
+          </h3>
+        </div>
+        
+        <div className="p-5 space-y-6">
+          {/* Emergency Numbers */}
+          <div>
+            <h4 className="text-sm font-semibold text-slate-500 mb-3 flex items-center uppercase tracking-wider">
+              <PhoneCall size={16} className="mr-2 text-red-500" /> {t('Emergency Contacts')}
+            </h4>
+            <div className="grid grid-cols-2 gap-3">
+              <a href="tel:112" className="bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 p-3 rounded-xl flex flex-col items-center justify-center transition">
+                <span className="font-bold text-xl">112</span>
+                <span className="text-xs">All Emergencies</span>
+              </a>
+              <a href="tel:100" className="bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-600 p-3 rounded-xl flex flex-col items-center justify-center transition">
+                <span className="font-bold text-xl">100</span>
+                <span className="text-xs">Police</span>
+              </a>
+              <a href="tel:1091" className="bg-pink-50 hover:bg-pink-100 border border-pink-200 text-pink-600 p-3 rounded-xl flex flex-col items-center justify-center transition">
+                <span className="font-bold text-xl">1091</span>
+                <span className="text-xs">Women Helpline</span>
+              </a>
+              <a href="tel:1033" className="bg-orange-50 hover:bg-orange-100 border border-orange-200 text-orange-600 p-3 rounded-xl flex flex-col items-center justify-center transition">
+                <span className="font-bold text-xl">1033</span>
+                <span className="text-xs">Highway Rescue</span>
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

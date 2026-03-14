@@ -12,27 +12,26 @@ export const OwnerDashboard = () => {
     role: '',
     company: 'Sharma Transport', // Default or from user profile
     route: '',
-    salary: ''
+    salary: '',
+    vehicleType: '',
+    netEarnings: ''
   });
 
   const handlePostJob = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user?.uid) return;
     
-    setLoading(true);
     try {
       await postJob({
         ownerId: user.uid,
         ...jobForm
       });
       setShowPostModal(false);
-      setJobForm({ role: '', company: 'Sharma Transport', route: '', salary: '' });
-      alert("Job posted successfully!");
+      setJobForm({ role: '', company: 'Sharma Transport', route: '', salary: '', vehicleType: '', netEarnings: '' });
+      // alert("Job posted successfully!"); // Removed alert for a smoother experience
     } catch (error) {
       console.error("Error posting job:", error);
       alert("Failed to post job. Please try again.");
-    } finally {
-      setLoading(false);
     }
   };
   return (
@@ -99,16 +98,29 @@ export const OwnerDashboard = () => {
               <h2 className="text-2xl font-bold text-slate-900 mb-6">Post a Driving Job</h2>
               
               <form onSubmit={handlePostJob} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Job Role</label>
-                  <input 
-                    type="text" 
-                    required
-                    value={jobForm.role}
-                    onChange={(e) => setJobForm({...jobForm, role: e.target.value})}
-                    placeholder="e.g., Long Haul Driver (Trailer)"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  />
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Job Role</label>
+                    <input 
+                      type="text" 
+                      required
+                      value={jobForm.role}
+                      onChange={(e) => setJobForm({...jobForm, role: e.target.value})}
+                      placeholder="e.g., Long Haul Driver"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Vehicle Type</label>
+                    <input 
+                      type="text" 
+                      required
+                      value={jobForm.vehicleType}
+                      onChange={(e) => setJobForm({...jobForm, vehicleType: e.target.value})}
+                      placeholder="e.g., 18-Wheeler Trailer"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    />
+                  </div>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1">Route / Location</label>
@@ -121,16 +133,29 @@ export const OwnerDashboard = () => {
                     className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Salary / Pay</label>
-                  <input 
-                    type="text" 
-                    required
-                    value={jobForm.salary}
-                    onChange={(e) => setJobForm({...jobForm, salary: e.target.value})}
-                    placeholder="e.g., ₹30,000/mo"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  />
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Base Salary</label>
+                    <input 
+                      type="text" 
+                      required
+                      value={jobForm.salary}
+                      onChange={(e) => setJobForm({...jobForm, salary: e.target.value})}
+                      placeholder="e.g., ₹30,000/mo"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Net Earnings (Est.)</label>
+                    <input 
+                      type="text" 
+                      required
+                      value={jobForm.netEarnings}
+                      onChange={(e) => setJobForm({...jobForm, netEarnings: e.target.value})}
+                      placeholder="e.g., ₹45,000/mo"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    />
+                  </div>
                 </div>
                 
                 <button 

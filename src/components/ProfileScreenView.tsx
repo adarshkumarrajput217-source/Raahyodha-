@@ -1,35 +1,15 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
-  ShieldCheck, Edit2, HelpCircle, PhoneCall, MessageSquare, 
-  Video, Moon, Sun, Globe, Crown, LogOut, ChevronDown, ChevronUp, AlertCircle, Save, Camera
+  ShieldCheck, Edit2, 
+  Video, Moon, Sun, Globe, Crown, LogOut, AlertCircle, Save, Camera
 } from 'lucide-react';
 import { useAppContext } from '../store/AppContext';
 import { VerificationScreen } from './VerificationScreenView';
 
 export const ProfileScreen = () => {
   const { user, setUser, theme, setTheme, language, setLanguage, logout, t } = useAppContext();
-  const [activeFaq, setActiveFaq] = useState<number | null>(null);
-  const [supportMsg, setSupportMsg] = useState('');
-  const [msgSent, setMsgSent] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-
-  const faqs = [
-    { q: 'How to find loads?', a: 'Go to the Home dashboard and scroll down to "Available Loads".' },
-    { q: 'How to report a bribe?', a: 'Use the Map screen and tap the "Bribe/Police Alerts" button.' },
-    { q: 'Is the app free?', a: 'Yes, basic features are free. Premium features require an upgrade.' },
-  ];
-
-  const handleSupportSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (supportMsg.trim()) {
-      setMsgSent(true);
-      setTimeout(() => {
-        setSupportMsg('');
-        setMsgSent(false);
-      }, 3000);
-    }
-  };
 
   if (!user) return null;
 
@@ -172,112 +152,6 @@ export const ProfileScreen = () => {
             <div><p className="text-slate-500">Location</p><p className="text-slate-900 font-bold">NH44, Murthal</p></div>
           </div>
         )}
-      </div>
-
-      {/* Help & Support */}
-      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-        <div className="p-5 border-b border-slate-200 bg-slate-50">
-          <h3 className="font-bold text-slate-900 text-lg flex items-center">
-            <HelpCircle size={20} className="mr-2 text-blue-500" /> {t('Help & Support')}
-          </h3>
-        </div>
-        
-        <div className="p-5 space-y-6">
-          {/* Emergency Numbers */}
-          <div>
-            <h4 className="text-sm font-semibold text-slate-500 mb-3 flex items-center uppercase tracking-wider">
-              <PhoneCall size={16} className="mr-2 text-red-500" /> {t('Emergency Contacts')}
-            </h4>
-            <div className="grid grid-cols-2 gap-3">
-              <button className="bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 p-3 rounded-xl flex flex-col items-center justify-center transition">
-                <span className="font-bold text-xl">112</span>
-                <span className="text-xs">All Emergencies</span>
-              </button>
-              <button className="bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-600 p-3 rounded-xl flex flex-col items-center justify-center transition">
-                <span className="font-bold text-xl">100</span>
-                <span className="text-xs">Police</span>
-              </button>
-              <button className="bg-pink-50 hover:bg-pink-100 border border-pink-200 text-pink-600 p-3 rounded-xl flex flex-col items-center justify-center transition">
-                <span className="font-bold text-xl">1091</span>
-                <span className="text-xs">Women Helpline</span>
-              </button>
-              <button className="bg-orange-50 hover:bg-orange-100 border border-orange-200 text-orange-600 p-3 rounded-xl flex flex-col items-center justify-center transition">
-                <span className="font-bold text-xl">1033</span>
-                <span className="text-xs">Highway Rescue</span>
-              </button>
-            </div>
-          </div>
-
-          {/* FAQs */}
-          <div>
-            <h4 className="text-sm font-semibold text-slate-500 mb-3 uppercase tracking-wider">{t('FAQs')}</h4>
-            <div className="space-y-2">
-              {faqs.map((faq, i) => (
-                <div key={i} className="border border-slate-200 rounded-xl overflow-hidden">
-                  <button 
-                    onClick={() => setActiveFaq(activeFaq === i ? null : i)}
-                    className="w-full flex justify-between items-center p-4 bg-slate-50 hover:bg-slate-100 transition text-left"
-                  >
-                    <span className="font-medium text-slate-900 text-sm">{faq.q}</span>
-                    {activeFaq === i ? <ChevronUp size={18} className="text-slate-500" /> : <ChevronDown size={18} className="text-slate-500" />}
-                  </button>
-                  <AnimatePresence>
-                    {activeFaq === i && (
-                      <motion.div 
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        className="p-4 bg-white text-sm text-slate-600 border-t border-slate-200"
-                      >
-                        {faq.a}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Tutorials */}
-          <div>
-            <h4 className="text-sm font-semibold text-slate-500 mb-3 flex items-center uppercase tracking-wider">
-              <Video size={16} className="mr-2 text-purple-500" /> {t('Tutorial Videos')}
-            </h4>
-            <div className="flex space-x-3 overflow-x-auto pb-2 scrollbar-hide">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="min-w-[160px] h-24 bg-slate-100 rounded-xl border border-slate-200 flex items-center justify-center relative group cursor-pointer overflow-hidden">
-                  <img src={`https://picsum.photos/seed/tutorial${i}/300/200`} alt="Tutorial" className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 transition" />
-                  <div className="w-10 h-10 bg-black/50 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/40 z-10">
-                    <div className="w-0 h-0 border-t-6 border-t-transparent border-l-10 border-l-white border-b-6 border-b-transparent ml-1"></div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Contact Support Form */}
-          <div>
-            <h4 className="text-sm font-semibold text-slate-500 mb-3 flex items-center uppercase tracking-wider">
-              <MessageSquare size={16} className="mr-2 text-green-500" /> {t('Contact Support')}
-            </h4>
-            <form onSubmit={handleSupportSubmit} className="space-y-3">
-              <textarea
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary resize-none text-sm"
-                placeholder={t('Describe your issue...')}
-                rows={3}
-                value={supportMsg}
-                onChange={(e) => setSupportMsg(e.target.value)}
-                required
-              ></textarea>
-              <button 
-                type="submit"
-                className="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-3 rounded-xl transition flex items-center justify-center border border-slate-200"
-              >
-                {msgSent ? <span className="text-green-600 flex items-center"><ShieldCheck size={18} className="mr-2" /> Sent Successfully</span> : t('Submit Request')}
-              </button>
-            </form>
-          </div>
-        </div>
       </div>
 
       {/* Settings & Actions */}
