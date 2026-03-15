@@ -18,13 +18,9 @@ export const SplashScreen = ({ onFinish }: { onFinish: () => void }) => {
         className="w-full h-full flex items-center justify-center p-4"
       >
         <img 
-          src="/logo.png" 
+          src="/icon.svg" 
           alt="Raahyodha Splash" 
           className="w-full max-w-lg h-auto object-contain"
-          onError={(e) => {
-            // Fallback if they haven't uploaded it yet
-            (e.target as HTMLImageElement).src = "/icons/icon-1024x1024.png";
-          }}
         />
       </motion.div>
     </div>

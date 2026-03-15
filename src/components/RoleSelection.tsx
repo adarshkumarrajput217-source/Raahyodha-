@@ -20,13 +20,10 @@ export const RoleSelection = ({ onSelect }: { onSelect: (role: Role) => void }) 
       >
         <div className="mb-6 w-32 h-32 sm:w-40 sm:h-40">
           <img 
-            src="/logo.png" 
+            src="/icon.svg" 
             alt="Raahyodha Logo" 
             className="w-full h-full object-contain drop-shadow-xl"
             referrerPolicy="no-referrer"
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = "/icons/icon-1024x1024.png";
-            }}
           />
         </div>
 

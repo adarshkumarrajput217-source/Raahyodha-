@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { MapPin, Clock, Coffee, AlertTriangle, Navigation, Package, ChevronRight, MessageSquare, Briefcase, Loader2, CheckCircle2, Search, HeartPulse, Users, Car, FileText, CreditCard, ShieldCheck, Truck } from 'lucide-react';
+import { MapPin, Clock, Coffee, AlertTriangle, Navigation, Package, ChevronRight, MessageSquare, Briefcase, Loader2, CheckCircle2, Search, HeartPulse, Users, Car, FileText, CreditCard, ShieldCheck, Truck, Calculator } from 'lucide-react';
 import { generateAIResponse } from '../../services/gemini';
 import { subscribeToJobs, applyForJob, Job } from '../../services/jobs';
 import { useAppContext } from '../../store/AppContext';
 import { ChallanCheckModal } from '../ChallanCheckModal';
 import { RCCheckModal } from '../RCCheckModal';
+import { TollFuelCalculatorModal } from '../TollFuelCalculatorModal';
+import { ExpenseTrackerModal } from '../ExpenseTrackerModal';
 
 export const DriverDashboard = () => {
   const { user, t } = useAppContext();
@@ -16,6 +18,8 @@ export const DriverDashboard = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isChallanModalOpen, setIsChallanModalOpen] = useState(false);
   const [isRCModalOpen, setIsRCModalOpen] = useState(false);
+  const [isTollFuelModalOpen, setIsTollFuelModalOpen] = useState(false);
+  const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
 
   const allDhabas = [
     { name: 'Sher-e-Punjab Dhaba', dist: '2.5 km', rating: 4.5, type: 'Veg/Non-Veg' },
@@ -252,15 +256,19 @@ export const DriverDashboard = () => {
             <CreditCard size={24} className="text-blue-500 mb-2" />
             <span className="text-xs font-semibold text-slate-700 text-center leading-tight">Check<br/>RC</span>
           </button>
-          <button className="flex flex-col items-center justify-center p-4 bg-white opacity-50 cursor-not-allowed relative">
-            <ShieldCheck size={24} className="text-green-500 mb-2" />
-            <span className="text-xs font-semibold text-slate-700 text-center leading-tight">Check<br/>Licence</span>
-            <span className="absolute top-2 right-2 text-[8px] font-bold uppercase tracking-wider bg-slate-200 text-slate-500 px-1.5 py-0.5 rounded">Soon</span>
+          <button 
+            onClick={() => setIsTollFuelModalOpen(true)}
+            className="flex flex-col items-center justify-center p-4 bg-white hover:bg-slate-50 transition-colors"
+          >
+            <Calculator size={24} className="text-green-500 mb-2" />
+            <span className="text-xs font-semibold text-slate-700 text-center leading-tight">Toll & Fuel<br/>Calculator</span>
           </button>
-          <button className="flex flex-col items-center justify-center p-4 bg-white opacity-50 cursor-not-allowed relative">
-            <HeartPulse size={24} className="text-red-500 mb-2" />
-            <span className="text-xs font-semibold text-slate-700 text-center leading-tight">Yodha Loans<br/>& Life Beema</span>
-            <span className="absolute top-2 right-2 text-[8px] font-bold uppercase tracking-wider bg-slate-200 text-slate-500 px-1.5 py-0.5 rounded">Soon</span>
+          <button 
+            onClick={() => setIsExpenseModalOpen(true)}
+            className="flex flex-col items-center justify-center p-4 bg-white hover:bg-slate-50 transition-colors"
+          >
+            <FileText size={24} className="text-indigo-500 mb-2" />
+            <span className="text-xs font-semibold text-slate-700 text-center leading-tight">Kharcha<br/>Diary</span>
           </button>
         </div>
       </div>
@@ -272,6 +280,12 @@ export const DriverDashboard = () => {
         )}
         {isRCModalOpen && (
           <RCCheckModal isOpen={isRCModalOpen} onClose={() => setIsRCModalOpen(false)} />
+        )}
+        {isTollFuelModalOpen && (
+          <TollFuelCalculatorModal isOpen={isTollFuelModalOpen} onClose={() => setIsTollFuelModalOpen(false)} />
+        )}
+        {isExpenseModalOpen && (
+          <ExpenseTrackerModal isOpen={isExpenseModalOpen} onClose={() => setIsExpenseModalOpen(false)} />
         )}
       </AnimatePresence>
     </div>

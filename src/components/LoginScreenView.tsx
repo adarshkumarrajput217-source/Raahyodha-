@@ -97,13 +97,10 @@ export const LoginScreen = ({ onLogin }: { onLogin: (phone: string, uid: string)
       >
         <div className="mb-8 w-48 h-48 sm:w-64 sm:h-64">
           <img 
-            src="/logo.png" 
+            src="/icon.svg" 
             alt="Raahyodha Logo" 
             className="w-full h-full object-contain drop-shadow-xl"
             referrerPolicy="no-referrer"
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = "/icons/icon-1024x1024.png";
-            }}
           />
         </div>
 

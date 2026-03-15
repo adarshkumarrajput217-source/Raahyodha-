@@ -1,69 +1,70 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
   <defs>
-    <linearGradient id="truckGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#E66A2A" />
-      <stop offset="100%" stop-color="#D35400" />
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" /> <!-- slate-900 -->
+      <stop offset="100%" stop-color="#1e3a8a" /> <!-- blue-900 -->
     </linearGradient>
-    <linearGradient id="wheelGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#4A4A4A" />
-      <stop offset="100%" stop-color="#1A1A1A" />
+    <linearGradient id="sunGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f97316" /> <!-- orange-500 -->
+      <stop offset="100%" stop-color="#eab308" /> <!-- yellow-500 -->
     </linearGradient>
-    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="10" stdDeviation="15" flood-color="#E66A2A" flood-opacity="0.2"/>
+    <linearGradient id="truckGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#cbd5e1" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="15" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <filter id="dropShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="15" stdDeviation="20" flood-color="#000000" flood-opacity="0.4"/>
     </filter>
   </defs>
 
-  <!-- White Background -->
-  <rect width="1024" height="1024" fill="#FFFFFF" />
+  <!-- Shield/Badge Base -->
+  <path d="M 512 50 L 850 200 L 850 600 C 850 800 650 920 512 980 C 374 920 174 800 174 600 L 174 200 Z" fill="url(#bgGrad)" filter="url(#dropShadow)" />
+  
+  <!-- Inner Shield Border -->
+  <path d="M 512 80 L 820 220 L 820 590 C 820 770 640 880 512 940 C 384 880 204 770 204 590 L 204 220 Z" fill="none" stroke="#f97316" stroke-width="12" opacity="0.8" />
 
-  <g filter="url(#shadow)" transform="translate(0, 50)">
-    
-    <!-- Trailer Body (The big container) -->
-    <rect x="280" y="400" width="640" height="330" rx="16" fill="#FFFFFF" stroke="#E66A2A" stroke-width="8" />
-    
-    <!-- Grid lines on Trailer Body -->
-    <path d="M 280 482 L 920 482 M 280 564 L 920 564 M 280 646 L 920 646" stroke="#E66A2A" stroke-width="2" opacity="0.3" />
-    <path d="M 440 400 L 440 730 M 600 400 L 600 730 M 760 400 L 760 730" stroke="#E66A2A" stroke-width="2" opacity="0.3" />
+  <!-- Rising Sun -->
+  <circle cx="512" cy="450" r="180" fill="url(#sunGrad)" filter="url(#glow)" />
 
-    <!-- Trailer Base/Chassis -->
-    <rect x="250" y="730" width="670" height="40" rx="8" fill="#E66A2A" />
-    
-    <!-- Truck Cab -->
-    <path d="M 80 770 L 80 530 C 80 490 110 460 150 460 L 220 460 L 260 400 L 280 400 L 280 770 Z" fill="url(#truckGrad)" />
-    
-    <!-- Cab Window -->
-    <path d="M 100 500 C 100 480 110 480 130 480 L 200 480 L 240 420 L 260 420 L 260 580 L 100 580 Z" fill="#FFFFFF" opacity="0.9" />
-    
-    <!-- Cab Details (Grill, Lights) -->
-    <rect x="80" y="650" width="30" height="80" rx="5" fill="#A04000" />
-    <circle cx="95" cy="610" r="10" fill="#FFD700" />
-    
-    <!-- Wheels -->
-    <!-- Cab Wheel -->
-    <circle cx="180" cy="770" r="55" fill="url(#wheelGrad)" />
-    <circle cx="180" cy="770" r="30" fill="#E0E0E0" />
-    <circle cx="180" cy="770" r="12" fill="#1A1A1A" />
-    
-    <!-- Trailer Wheels -->
-    <circle cx="680" cy="770" r="55" fill="url(#wheelGrad)" />
-    <circle cx="680" cy="770" r="30" fill="#E0E0E0" />
-    <circle cx="680" cy="770" r="12" fill="#1A1A1A" />
-    
-    <circle cx="820" cy="770" r="55" fill="url(#wheelGrad)" />
-    <circle cx="820" cy="770" r="30" fill="#E0E0E0" />
-    <circle cx="820" cy="770" r="12" fill="#1A1A1A" />
+  <!-- Highway / Road -->
+  <path d="M 512 450 L 820 850 L 204 850 Z" fill="#334155" />
+  <!-- Road Lines -->
+  <path d="M 512 450 L 512 850" stroke="#ffffff" stroke-width="16" stroke-dasharray="40, 30" opacity="0.8" />
 
-    <!-- Text on Trailer -->
-    <text x="600" y="600" font-family="'Impact', 'Arial Black', sans-serif" font-weight="900" font-size="110" fill="#6E2C00" text-anchor="middle" letter-spacing="2">RAAHYODHA</text>
+  <!-- Truck Front View -->
+  <g transform="translate(0, 50)">
+    <!-- Tires -->
+    <rect x="360" y="620" width="60" height="100" rx="15" fill="#0f172a" />
+    <rect x="604" y="620" width="60" height="100" rx="15" fill="#0f172a" />
+    
+    <!-- Main Body -->
+    <path d="M 380 350 L 644 350 C 660 350 670 360 674 380 L 700 550 C 704 580 680 600 650 600 L 374 600 C 344 600 320 580 324 550 L 350 380 C 354 360 364 350 380 350 Z" fill="url(#truckGrad)" filter="url(#dropShadow)" />
+    
+    <!-- Windshield -->
+    <path d="M 400 380 L 624 380 C 630 380 635 385 638 395 L 654 470 C 656 480 650 490 640 490 L 384 490 C 374 490 368 480 370 470 L 386 395 C 389 385 394 380 400 380 Z" fill="#0f172a" />
+    <!-- Windshield Reflection -->
+    <path d="M 400 380 L 500 380 L 450 490 L 384 490 Z" fill="#ffffff" opacity="0.15" />
 
-    <!-- Basketball Globe on Top -->
-    <g transform="translate(600, 280)">
-      <circle cx="0" cy="0" r="80" fill="#D35400" />
-      <!-- Globe/Basketball lines -->
-      <path d="M -80 0 A 80 80 0 0 0 80 0" fill="none" stroke="#FFFFFF" stroke-width="6" />
-      <path d="M 0 -80 A 80 80 0 0 0 0 80" fill="none" stroke="#FFFFFF" stroke-width="6" />
-      <path d="M -55 -55 A 80 80 0 0 1 -55 55" fill="none" stroke="#FFFFFF" stroke-width="6" />
-      <path d="M 55 -55 A 80 80 0 0 0 55 55" fill="none" stroke="#FFFFFF" stroke-width="6" />
-    </g>
+    <!-- Grill -->
+    <rect x="440" y="510" width="144" height="60" rx="8" fill="#1e293b" />
+    <line x1="460" y1="525" x2="564" y2="525" stroke="#94a3b8" stroke-width="6" stroke-linecap="round" />
+    <line x1="460" y1="540" x2="564" y2="540" stroke="#94a3b8" stroke-width="6" stroke-linecap="round" />
+    <line x1="460" y1="555" x2="564" y2="555" stroke="#94a3b8" stroke-width="6" stroke-linecap="round" />
+
+    <!-- Headlights -->
+    <circle cx="390" cy="540" r="18" fill="#fef08a" filter="url(#glow)" />
+    <circle cx="634" cy="540" r="18" fill="#fef08a" filter="url(#glow)" />
+    
+    <!-- Bumper -->
+    <rect x="350" y="580" width="324" height="30" rx="10" fill="#475569" />
   </g>
+
+  <!-- Text "RAAHYODHA" -->
+  <text x="512" y="820" font-family="'Inter', 'Arial Black', sans-serif" font-weight="900" font-size="95" fill="#ffffff" text-anchor="middle" letter-spacing="4" filter="url(#dropShadow)">RAAHYODHA</text>
+  <!-- Subtitle -->
+  <text x="512" y="880" font-family="'Inter', sans-serif" font-weight="600" font-size="32" fill="#f97316" text-anchor="middle" letter-spacing="8">HIGHWAY WARRIOR</text>
 </svg>
